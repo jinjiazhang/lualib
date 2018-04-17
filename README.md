@@ -79,10 +79,10 @@ const luaL_Reg* luapp::get_libs()
 ```lua
 -- main.lua
 app.test = function (offset)
-	local t1 = app.get_time()
-	app.mov_time(offset)
-	local t2 = app.get_time()
-	return t1, t2, t2 - t1
+    local t1 = app.get_time()
+    app.mov_time(offset)
+    local t2 = app.get_time()
+    return t1, t2, t2 - t1
 end
 ```
 
