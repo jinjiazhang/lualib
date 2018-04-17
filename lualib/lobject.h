@@ -9,14 +9,14 @@ public:
     lobject(lua_State* L);
     ~lobject();
 
-	virtual const luaL_Reg* get_libs();
+    virtual const luaL_Reg* get_libs();
     
 private:
-	void link_object();
-	void unlink_object();
+    void link_object();
+    void unlink_object();
 
 protected:
-	lua_State* L;
+    lua_State* L;
 };
 
 #endif
