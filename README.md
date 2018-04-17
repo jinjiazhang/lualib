@@ -1,8 +1,8 @@
 # lualib
 C call lua function and lua call C, Cpp function wrapping
 
-luapp.h
 ```C
+// luapp.h
 class luapp : public lobject
 {
 public:
@@ -21,8 +21,8 @@ private:
 }
 ```
 
-lua.cpp
 ```C
+// lua.cpp
 luapp::luapp() : lobject(luaL_newstate())
 {
     time_offset_ = 0;
@@ -76,8 +76,8 @@ const luaL_Reg* luapp::get_libs()
 }
 ```
 
-main.lua
 ```lua
+-- main.lua
 app.test = function (offset)
 	local t1 = app.get_time()
 	app.mov_time(offset)
@@ -86,7 +86,7 @@ app.test = function (offset)
 end
 ```
 
-result
 ```lua
+-- result
 1523960116      1523960121      5
 ```
