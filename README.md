@@ -1,5 +1,6 @@
 # lualib
-C call lua function and lua call C, Cpp function wrapping
+C call lua function and lua call C, Cpp function wrapping<br>
+improve from https://github.com/trumanzhao/luna
 
 ```C
 // luapp.h
