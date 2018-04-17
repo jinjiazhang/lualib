@@ -87,6 +87,7 @@ end
 ```
 
 ```lua
--- result
+-- new luapp()->init()
+-- result:
 1523960116      1523960121      5
 ```
