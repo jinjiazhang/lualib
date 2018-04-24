@@ -4,7 +4,9 @@
 #include <tuple>
 #include <string>
 #include <functional>
-#include "lua.hpp"
+
+#include "lua/lua.hpp"
+// #include "protolog/protolog.h"
 
 #define IMPORT_CFUNC(method) \
     #method, lua_##method
@@ -31,7 +33,25 @@ int lua_##class##_##method(lua_State* L) \
     return f(obj, L); \
 }
 
+#ifdef _JINJIAZHANG_PROTOLOG_H_
+#define lualib_trace(fmt, ...)  proto_trace(fmt, __VA_ARGS__)
+#define lualib_debug(fmt, ...)  proto_debug(fmt, __VA_ARGS__)
+#define lualib_info(fmt, ...)   proto_info(fmt, __VA_ARGS__)
+#define lualib_warn(fmt, ...)   proto_warn(fmt, __VA_ARGS__)
+#define lualib_error(fmt, ...)  proto_error(fmt, __VA_ARGS__)
+#define lualib_fatal(fmt, ...)  proto_fatal(fmt, __VA_ARGS__)
+#else
+#define lualib_trace(fmt, ...)
+#define lualib_debug(fmt, ...)
+#define lualib_info(fmt, ...)
+#define lualib_warn(fmt, ...)
+#define lualib_error(fmt, ...)
+#define lualib_fatal(fmt, ...)
+#endif
+
 #define LUAPP_DO(exp) { if(!(exp)) return false; }
+
+int   lua_emptyfunc(lua_State* L);
 bool  lua_islobject(lua_State* L, int idx);
 void* lua_tolobject(lua_State* L, int idx);
 void  lua_pushlobject(lua_State* L, void* obj);
@@ -53,7 +73,7 @@ template <> inline unsigned long long luaL_getvalue<unsigned long long>(lua_Stat
 template <> inline float luaL_getvalue<float>(lua_State* L, int i) { return (float)lua_tonumber(L, i); }
 template <> inline double luaL_getvalue<double>(lua_State* L, int i) { return lua_tonumber(L, i); }
 template <> inline const char* luaL_getvalue<const char*>(lua_State* L, int i) { return lua_tostring(L, i); }
-template <> inline std::string luaL_getvalue<std::string>(lua_State* L, int i) { const char* str = lua_tostring(L, i); return str ? str : ""; }
+template <> inline std::string luaL_getvalue<std::string>(lua_State* L, int i) { size_t len; const char* str = lua_tolstring(L, i, &len); return std::string(str, len); }
 
 template <typename T> 
 inline void luaL_pushvalue(lua_State* L, T* v) { lua_pushlobject(L, v); }
@@ -71,7 +91,7 @@ inline void luaL_pushvalue(lua_State* L, unsigned long long v) { lua_pushinteger
 inline void luaL_pushvalue(lua_State* L, float v) { lua_pushnumber(L, v); }
 inline void luaL_pushvalue(lua_State* L, double v) { lua_pushnumber(L, v); }
 inline void luaL_pushvalue(lua_State* L, const char* v) { lua_pushstring(L, v); }
-inline void luaL_pushvalue(lua_State* L, const std::string& v) { lua_pushstring(L, v.c_str()); }
+inline void luaL_pushvalue(lua_State* L, const std::string& v) { lua_pushlstring(L, v.c_str(), v.size()); }
 
 template <size_t... ints>
 struct luapp_sequence { };
@@ -81,8 +101,6 @@ struct make_luapp_sequence : make_luapp_sequence<size - 1, size - 1, ints...> { 
 
 template <size_t... ints>
 struct make_luapp_sequence<0, ints...> : luapp_sequence<ints...> { };
-
-const char* luaL_lasterr(lua_State* L);
 
 bool luaL_pushfunc(lua_State* L, const char* name);
 
@@ -187,7 +205,7 @@ ofunc make_luafunc(int(C::*func)(lua_State*))
 {
     return [=](void* obj, lua_State* L)
     {
-        return (((C*)obj)->func)(L);
+        return (((C*)obj)->*func)(L);
     };
 }
 

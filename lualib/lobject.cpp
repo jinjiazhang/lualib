@@ -45,6 +45,11 @@ void lobject::unlink_object()
     lua_settable(L, LUA_REGISTRYINDEX);
 }
 
+int lua_emptyfunc(lua_State* L)
+{
+    return 0;
+}
+
 bool lua_islobject(lua_State* L, int idx)
 {
     if (!lua_istable(L, idx)) {
@@ -79,15 +84,14 @@ void* lua_tolobject(lua_State* L, int idx)
 
 void lua_pushlobject(lua_State* L, void* p)
 {
-    lua_pushlightuserdata(L, p);
+    lobject* obj = static_cast<lobject*>(p);
+    lua_pushlightuserdata(L, obj);
     lua_gettable(L, LUA_REGISTRYINDEX);
 
     // _R[p].__this == nullprt
     if (lua_islobject(L, -1) && !lua_tolobject(L, -1))
     {
-        lua_pushlightuserdata(L, p);
-        lua_gettable(L, LUA_REGISTRYINDEX);
-        lobject* obj = static_cast<lobject*>(p);
+        lua_pushvalue(L, -1);
         luaL_setfuncs(L, obj->get_libs(), 1);
 
         lua_pushlightuserdata(L, obj);
