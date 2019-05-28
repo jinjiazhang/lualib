@@ -7,7 +7,7 @@ class lobject
 {
 public:
     lobject(lua_State* L);
-    ~lobject();
+    virtual ~lobject();
 
     virtual const luaL_Reg* get_libs();
     

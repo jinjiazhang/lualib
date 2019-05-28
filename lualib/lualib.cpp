@@ -67,6 +67,6 @@ bool luaL_safecall(lua_State* L, int nargs, int nrets)
         lua_pop(L, 2);
         return false;
     }
-    lua_remove(L, -nrets - 1);
+    lua_pop(L, nrets + 1);
     return true;
 }

@@ -34,12 +34,12 @@ int lua_##class##_##method(lua_State* L) \
 }
 
 #ifdef _JINJIAZHANG_PROTOLOG_H_
-#define lualib_trace(fmt, ...)  proto_trace(fmt, __VA_ARGS__)
-#define lualib_debug(fmt, ...)  proto_debug(fmt, __VA_ARGS__)
-#define lualib_info(fmt, ...)   proto_info(fmt, __VA_ARGS__)
-#define lualib_warn(fmt, ...)   proto_warn(fmt, __VA_ARGS__)
-#define lualib_error(fmt, ...)  proto_error(fmt, __VA_ARGS__)
-#define lualib_fatal(fmt, ...)  proto_fatal(fmt, __VA_ARGS__)
+#define lualib_trace(fmt, ...)  log_trace(fmt, __VA_ARGS__)
+#define lualib_debug(fmt, ...)  log_debug(fmt, __VA_ARGS__)
+#define lualib_info(fmt, ...)   log_info(fmt, __VA_ARGS__)
+#define lualib_warn(fmt, ...)   log_warn(fmt, __VA_ARGS__)
+#define lualib_error(fmt, ...)  log_error(fmt, __VA_ARGS__)
+#define lualib_fatal(fmt, ...)  log_fatal(fmt, __VA_ARGS__)
 #else
 #define lualib_trace(fmt, ...)
 #define lualib_debug(fmt, ...)
@@ -90,6 +90,7 @@ inline void luaL_pushvalue(lua_State* L, long long v) { lua_pushinteger(L, (lua_
 inline void luaL_pushvalue(lua_State* L, unsigned long long v) { lua_pushinteger(L, (lua_Integer)v); }
 inline void luaL_pushvalue(lua_State* L, float v) { lua_pushnumber(L, v); }
 inline void luaL_pushvalue(lua_State* L, double v) { lua_pushnumber(L, v); }
+inline void luaL_pushvalue(lua_State* L, char* v) { lua_pushstring(L, v); }
 inline void luaL_pushvalue(lua_State* L, const char* v) { lua_pushstring(L, v); }
 inline void luaL_pushvalue(lua_State* L, const std::string& v) { lua_pushlstring(L, v.c_str(), v.size()); }
 
